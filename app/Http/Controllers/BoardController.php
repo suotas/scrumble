@@ -26,6 +26,18 @@ class BoardController extends Controller
     }
 
     /**
+     * Show board list page.
+     */
+    public function list()
+    {
+        Log::debug("BoardController@index start");
+        $id = Auth::id();
+        $boards = DB::select('select * from boards where user_id = ?', [$id]);
+        Log::debug("BoardController@index end");
+        return view('board/list', compact('boards'));
+    }
+
+    /**
      * Create new board data.
      */
     public function store(BoardCreateRequest $request)
@@ -46,6 +58,6 @@ class BoardController extends Controller
             Log::debug($e);
         }
         Log::debug("board/store end");
-        return redirect()->route('home');
+        return redirect()->route('board/list');
     }
 }
