@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
@@ -26,8 +27,10 @@ class HomeController extends Controller
      */
     public function index()
     {
+        Log::debug("home start");
         $id = Auth::id();
         $boards = DB::select('select * from boards where user_id = ?', [$id]);
+        Log::debug("home end");
         return view('home', compact('boards'));
     }
 }
