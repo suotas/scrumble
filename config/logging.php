@@ -37,7 +37,8 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['single', 'daily'],
+            'name' => 'stack-channel',
             'ignore_exceptions' => false,
         ],
 
@@ -45,6 +46,7 @@ return [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
             'level' => 'debug',
+            'tap' => [App\Logging\SampleTap::class],
         ],
 
         'daily' => [

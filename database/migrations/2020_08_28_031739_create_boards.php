@@ -16,7 +16,7 @@ class CreateBoards extends Migration
         Schema::create('boards', function (Blueprint $table) {
             $table->id();
             $table->string('board_name');
-            $table->longText('description');
+            $table->longText('description')->nullable();
             $table->timestamps();
 
             $table->foreignId('user_id')->constrained('users');
