@@ -3,9 +3,9 @@
     @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
-        @foreach( $errors->all() as $error)
+            @foreach( $errors->all() as $error)
             <li>{{ $error }}</li>
-        @endforeach
+            @endforeach
         </ul>
     </div>
     @endif
@@ -14,15 +14,29 @@
             <div class="card-columns">
                 @foreach ($boards as $board)
                 <a>
-                    <div class="card col-md-12" style="width: 18rem; height: 10rem">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $board->board_name }}</h5>
-                            <p class="card-text">{{ $board->description }}</p>
-                            <a href="#" class="btn btn-primary"
-                                >Go {{ $board->board_name }}</a
-                            >
+                    <form action="{{ route('board') }}" method="get">
+                        <div
+                            class="card col-md-12"
+                            style="width: 18rem; height: 10rem"
+                        >
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    {{ $board->board_name }}
+                                </h5>
+                                <input
+                                    type="hidden"
+                                    name="board_id"
+                                    value="{{ $board->id }}"
+                                />
+                                <p class="card-text">
+                                    {{ $board->description }}
+                                </p>
+                                <button type="submit" class="btn btn-primary">
+                                    {{ $board->board_name }}
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </a>
                 @endforeach
                 <div class="card col-md-12" style="width: 18rem; height: 10rem">
@@ -55,7 +69,9 @@
             <form action="{{ route('board/store') }}" method="post">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        Modal title
+                    </h5>
                     <button
                         type="button"
                         class="close"
