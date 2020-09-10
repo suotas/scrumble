@@ -26,9 +26,6 @@ class BoardController extends Controller
      */
     public function index(Request $request)
     {
-        if (1 === 1) {
-            abort(401, 'Unauthorized');
-        }
         Log::debug('BoardController@index start');
         $board_id = $request->input('board_id');
         $board = DB::select('select * from boards where id = ?', [$board_id]);
