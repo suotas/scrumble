@@ -4,9 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-use Illuminate\Support\Facades\Log;
-
-class BoardCreateRequest extends FormRequest
+class CardCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,15 +24,15 @@ class BoardCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'board_name' => ['required', 'max:255'],
+            'card_name' => ['required', 'max:255'],
         ];
     }
 
     public function messages()
     {
         return [
-            'board_name.required' => 'ボード名を入力してください。',
-            'board_name.max' => 'ボード名は255字以内で入力してください。',
+            'card_name.required' => 'カード名を入力してください。',
+            'card_name.max' => 'カード名は255字以内で入力してください。',
         ];
     }
 }

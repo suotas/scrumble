@@ -24,3 +24,5 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/board', 'BoardController@index')->name('board');
 Route::get('/board/list', 'BoardController@list')->name('board/list');
 Route::post('/board', 'BoardController@store')->name('board/store');
+
+Route::post('/card', 'CardController@store')->name('card/store');

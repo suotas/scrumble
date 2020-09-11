@@ -15,17 +15,18 @@ class CreateCards extends Migration
     {
         Schema::create('cards', function (Blueprint $table) {
             $table->id();
-            $table->string('card_name');
-            $table->integer('seq');
-            $table->date('deadline')->nullable();
-            $table->longText('description')->nullable();
-            $table->timestamps();
-
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('board_id')->constrained('boards');
             $table->foreignId('kanban_id')->constrained('kanbans');
+            $table->string('card_name');
+            $table->integer('card_seq');
+            $table->date('card_deadline')->nullable();
+            $table->longText('card_description')->nullable();
             $table
                 ->foreignId('assignee_id')
                 ->constrained('users')
                 ->nullable(true);
+            $table->timestamps();
         });
     }
 
