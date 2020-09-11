@@ -17,7 +17,7 @@ class CardController extends Controller
      */
     public function store(CardCreateRequest $request)
     {
-        Log::debug('card/store start');
+        Log::debug('CardController::store start');
         DB::beginTransaction();
         try {
             $max_seq = DB::select(
@@ -42,7 +42,7 @@ class CardController extends Controller
             DB::rollback();
             Log::debug($e);
         }
-        Log::debug('card/store end');
-        return redirect()->route('board/list');
+        Log::debug('CardController::store end');
+        return redirect('board?board_id=' . $board_id[0]->board_id);
     }
 }
