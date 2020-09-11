@@ -28,16 +28,22 @@ class BoardController extends Controller
     {
         Log::debug('BoardController@index start');
         $board_id = $request->input('board_id');
-        $board = DB::select('select * from boards where id = ?', [$board_id]);
+        $board = DB::select('select * from boards where id = ?', [
+            $board_id,
+        ])[0];
+        if (isset($board) && $board->user_id !== Auth::id()) {
+            abort(401, 'Unauthorized.');
+        }
         $kanbans = DB::select(
-            'select * from kanbans where board_id = ? order by seq',
+            'select * from kanbans where board_id = ? order by kanban_seq',
             [$board_id]
         );
+        $cards = [];
         foreach ($kanbans as $kanban) {
             $cards[
                 $kanban->id
             ] = DB::select(
-                'select * from cards where kanban_id = ? order by seq',
+                'select * from cards where kanban_id = ? order by card_seq',
                 [$kanban->id]
             );
         }

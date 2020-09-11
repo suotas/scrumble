@@ -29,7 +29,7 @@
                                     value="{{ $board->id }}"
                                 />
                                 <p class="card-text">
-                                    {{ $board->description }}
+                                    {{ $board->board_description }}
                                 </p>
                                 <button type="submit" class="btn btn-primary">
                                     {{ $board->board_name }}
