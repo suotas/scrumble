@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\BoardCreateRequest;
-use App\Model\Board;
 use DB;
+use App\Model\Board;
+use App\Model\Kanban;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use App\Http\Requests\BoardCreateRequest;
 
 class BoardController extends Controller
 {
@@ -21,28 +20,23 @@ class BoardController extends Controller
     {
         $this->middleware('auth');
     }
+
     /**
-     * Show board infomation.
+     * Show board information.
+     *
+     * @param  Request $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request)
     {
-        Log::debug('BoardController@index start');
-        $board_id = $request->input('board_id');
-        $board = DB::select('select * from boards where id = ?', [$board_id]);
-        $kanbans = DB::select(
-            'select * from kanbans where board_id = ? order by seq',
-            [$board_id]
-        );
-        foreach ($kanbans as $kanban) {
-            $cards[
-                $kanban->id
-            ] = DB::select(
-                'select * from cards where kanban_id = ? order by seq',
-                [$kanban->id]
-            );
+        $kanbans = Kanban::with('cards');
+        if ($request->card_id) {
+            $kanbans = $kanbans->whereBoardId($request->board_id);
         }
-        Log::debug('BoardController@index end');
-        return view('board/index', compact('board', 'kanbans', 'cards'));
+
+        return view('board/index', [
+            'kanbans' => $kanbans->orderBy('seq')->get(),
+        ]);
     }
 
     /**
@@ -50,32 +44,34 @@ class BoardController extends Controller
      */
     public function list()
     {
-        Log::debug('BoardController@list start');
-        $id = Auth::id();
-        $boards = DB::select('select * from boards where user_id = ?', [$id]);
-        Log::debug('BoardController@list end');
-        return view('board/list', compact('boards'));
+        return view('board/list', [
+            'boards' => Board::whereUserId(Auth::id())->get(),
+        ]);
     }
 
     /**
      * Create new board data.
+     * @param  BoardCreateRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
      */
     public function store(BoardCreateRequest $request)
     {
-        Log::debug('board/store start');
-        DB::beginTransaction();
         try {
-            $board = new Board();
-            $board->board_name = $request->board_name;
-            $board->user_id = Auth::id();
-            $board->save();
+            $query = Board::create([
+                'user_id'    => Auth::id(),
+                'board_name' => $request->board_name,
+            ]);
 
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollback();
-            Log::debug($e);
+            if ($query) {
+                // do something if success, like success flash or other
+                return redirect()->route('board/list');
+            }
+
+            // do something if failed, like error flash or other
+            return redirect()->route('board/list');
+        } catch (\Exception $exception) {
+            throw $exception;
         }
-        Log::debug('board/store end');
-        return redirect()->route('board/list');
     }
 }
